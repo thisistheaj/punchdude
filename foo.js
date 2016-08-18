@@ -1,7 +1,7 @@
+/**
+ * Created by ajbeckner on 8/18/16.
+ */
 SpriteAnim.Game = function () {
-
-    // this.mysprite = null;
-
 };
 
 SpriteAnim.Game.prototype = {
@@ -64,7 +64,7 @@ SpriteAnim.Game.prototype = {
 
         //Enable cursor keys so we can create some controls
         this.cursors = this.input.keyboard.createCursorKeys();
-        
+
         this.winButton = this.add.button(10,this.world.height - 100,'myButton',this.displayWinText,this,1,0,2);
         this.loseButton = this.add.button(960 - 100,this.world.height - 100,'myButton',this.displayLoseText,this,4,3,5);
 
@@ -153,12 +153,3 @@ SpriteAnim.Game.prototype = {
     }
 
 };
-
-var game = new Phaser.Game(960, 720, Phaser.AUTO, 'game');
-
-game.state.add('SpriteAnim.Boot', SpriteAnim.Boot);
-game.state.add('SpriteAnim.Preloader', SpriteAnim.Preloader);
-game.state.add('SpriteAnim.MainMenu', SpriteAnim.MainMenu);
-game.state.add('SpriteAnim.Game', SpriteAnim.Game);
-
-game.state.start('SpriteAnim.Boot');
