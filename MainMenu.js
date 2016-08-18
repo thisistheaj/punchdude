@@ -28,9 +28,7 @@ SpriteAnim.MainMenu.prototype = {
     },
 
     start: function () {
-
         this.state.start('SpriteAnim.Game');
-
     }
 
 };
