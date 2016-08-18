@@ -1,19 +1,21 @@
-var SpriteAnim = {};
+// var SpriteAnim = {
+//    
+// };
 
-SpriteAnim.Boot = function () {
-};
-
-SpriteAnim.Boot.prototype = {
-    preload: function() {
-        this.load.path = 'assets/';
-		this.load.image('preloaderBg', 'loading-bg.png');
-		this.load.image('preloaderBar', 'loading-bar.png');
-	},
-	create: function() {
-		this.state.start('SpriteAnim.Preloader');
-	}
-
-};
+// SpriteAnim.Boot = function () {
+// };
+//
+// SpriteAnim.Boot.prototype = {
+//     preload: function() {
+//         this.load.path = 'assets/';
+// 		this.load.image('preloaderBg', 'loading-bg.png');
+// 		this.load.image('preloaderBar', 'loading-bar.png');
+// 	},
+// 	create: function() {
+// 		this.state.start('SpriteAnim.Preloader');
+// 	}
+//
+// };
 
 SpriteAnim.Preloader = function () {
 };
@@ -35,20 +37,18 @@ SpriteAnim.Preloader.prototype = {
 		this.load.setPreloadSprite(this.preloadBar);
 
         this.load.spritesheet('guywalking', 'guywalking.png', 13, 14);
-
-        this.load.tilemap('tilemap', 'level3.json', null, Phaser.Tilemap.TILED_JSON);
+        
+        this.load.tilemap('tilemap', 'level.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', 'TileKit.png');
+        
         this.load.image('logo', 'logo.png');
-
+        
         this.load.bitmapFont('fat-and-tiny');
         this.load.bitmapFont('interfont');
         this.load.spritesheet('myButton','number-buttons-90x90.png',90,90);
-
-
     },
 
     create: function () {
-
         this.state.start('SpriteAnim.MainMenu');
 
     }
