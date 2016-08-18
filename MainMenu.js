@@ -8,11 +8,12 @@ SpriteAnim.MainMenu.prototype = {
 
     create: function () {
 
+        //set and position images
         this.stage.backgroundColor = 0x6699FF;
-
         var logo = this.add.image(this.world.centerX, 50, 'logo');
         logo.anchor.x = 0.5;
 
+        //set and position text
         var startText = this.add.bitmapText(this.world.centerX, 600, 'fat-and-tiny', 'CLICK ANYWHERE TO PLAY', 64);
         startText.anchor.x = 0.5;
         startText.smoothed = false;
@@ -23,8 +24,8 @@ SpriteAnim.MainMenu.prototype = {
         gameEndText.smoothed = false;
         gameEndText.tint = 0x222222;
 
+        //add input to navigate to game
         this.input.onDown.addOnce(this.start, this);
-
     },
 
     start: function () {

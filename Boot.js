@@ -1,13 +1,8 @@
 /**
  * Created by ajbeckner on 8/18/16.
  */
-var SpriteAnim = {
-
-};
-
-SpriteAnim.Boot = function () {
-    
-};
+var SpriteAnim = {};
+SpriteAnim.Boot = function () {};
 
 SpriteAnim.Boot.prototype = {
     preload: function() {
@@ -18,5 +13,4 @@ SpriteAnim.Boot.prototype = {
     create: function() {
         this.state.start('SpriteAnim.Preloader');
     }
-
 };
