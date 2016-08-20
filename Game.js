@@ -19,7 +19,7 @@ SpriteAnim.Game.prototype = {
         this.map.addTilesetImage('TileKit', 'tiles');
 
         //Add both the background and ground layers. We won't be doing anything with the
-        //GroundLayer though
+        //GroundLayer though change
         this.backgroundlayer = this.map.createLayer('Background');
         this.cloudslayer = this.map.createLayer('Clouds');
         this.groundLayerBG = this.map.createLayer('GroundLayerBG');
