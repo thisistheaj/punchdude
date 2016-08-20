@@ -19,7 +19,8 @@ SpriteAnim.Preloader.prototype = {
         this.load.setPreloadSprite(this.preloadBar);
 
         //SPRITES
-        this.load.spritesheet('guywalking', 'guywalking.png', 13, 14);
+        // this.load.spritesheet('guywalking', 'guywalking.png', 13, 14);
+        this.load.spritesheet('sprites', 'sprites.png', 16, 16);
         this.load.spritesheet('myButton','number-buttons-90x90.png',90,90);
 
         //Level Tilemap

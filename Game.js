@@ -71,6 +71,8 @@ SpriteAnim.Game.prototype = {
         }
 
         //Make the sprite collide with the ground layer
+        //this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
+
         this.physics.arcade.collide(this.hero, this.groundLayer);
         for (var i = 0; i < this.enemies.length; i++) {
             this.physics.arcade.collide(this.enemies[i], this.groundLayer);
@@ -172,14 +174,29 @@ SpriteAnim.Game.prototype = {
 
         if (this.cursors.right.isDown) {
             this.hero.body.velocity.x = 250;
-            this.hero.animations.play('left');
         } else if (this.cursors.left.isDown) {
             this.hero.body.velocity.x = -250;
-            this.hero.animations.play('right');
         }
 
-        if (this.hero.body.velocity.x === 0) {
-            this.hero.animations.stop();
+        if (this.hero.body.onFloor()) {
+            if (this.hero.body.velocity.x < 0) {
+                this.hero.animations.play('run');
+                this.hero.scale.x = -2;
+            } else if (this.hero.body.velocity.x > 0) {
+                this.hero.animations.play('run');
+                this.hero.scale.x = 2;
+            } else {
+                this.hero.animations.play('idle');
+            }
+        } else {
+            console.log("Prevelocity: " + Math.floor(this.hero.prevvelocity) + "Velocity" + Math.floor(this.hero.body.velocity.y));
+            console.log("Condition: " + (this.hero.body.velocity.y > this.hero.prevvelocity));
+            if (this.hero.body.velocity.y < 0) {
+                this.hero.animations.play('jump');
+            } else {
+                this.hero.animations.play('fall');
+            }
+            this.hero.prevvelocity = this.hero.body.velocity.y;
         }
 
 
@@ -203,14 +220,20 @@ SpriteAnim.Game.prototype = {
     },
 
     makeHero: function (result) {
-        this.hero = this.game.add.sprite(result[0].x, result[0].y, 'guywalking');
+        this.hero = this.game.add.sprite(result[0].x, result[0].y, 'sprites');
 
         this.physics.arcade.enable(this.hero);
         this.hero.body.bounce.y = 0.2;
         this.hero.body.gravity.y = 2000;
+        this.hero.prevvelocity = this.hero.body.velocity.y;
 
-        this.hero.animations.add('left', [0, 1, 2], 10, true);
-        this.hero.animations.add('right', [3, 4, 5], 10, true);
+        this.hero.anchor.setTo(.5,.5);
+
+        this.hero.animations.add('idle', [15,16,17], 10, true);
+        this.hero.animations.add('run', [29, 30, 31], 10, true);
+        this.hero.animations.add('punch', [43, 44, 46,47], 10, true);
+        this.hero.animations.add('jump', [32], 10, true);
+        this.hero.animations.add('fall', [33], 10, true);
 
         this.hero.scale.x = 2;
         this.hero.scale.y = 2;
@@ -222,7 +245,7 @@ SpriteAnim.Game.prototype = {
     makeEnemies: function (results) {
         var enemies = [];
         for (var i = 0; i < results.length; i++) {
-            var enemy = this.game.add.sprite(results[i].x, results[i].y, 'guywalking');
+            var enemy = this.game.add.sprite(results[i].x, results[i].y, 'sprites');
             this.physics.arcade.enable(enemy);
             enemy.body.bounce.y = 0.2;
             enemy.body.gravity.y = 2000;
