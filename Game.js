@@ -20,7 +20,7 @@ SpriteAnim.Game.prototype = {
 
         //Add both the background and ground layers. We won't be doing anything with the
         //GroundLayer though change
-        this.backgroundlayer = this.map.createLayer('Background');
+        // this.backgroundlayer = this.map.createLayer('Background');
         this.cloudslayer = this.map.createLayer('Clouds');
         this.groundLayerBG = this.map.createLayer('GroundLayerBG');
         this.grasstips = this.map.createLayer('GrassTips');
@@ -35,22 +35,22 @@ SpriteAnim.Game.prototype = {
 
         ////////////////////////////
 
-        this.sprite = this.add.sprite(50, 960, 'guywalking');
-        this.physics.arcade.enable(this.sprite);
+        this.hero = this.add.sprite(50, 960, 'guywalking');
+        this.physics.arcade.enable(this.hero);
 
         //Change the world size to match the size of this layer
         this.groundLayer.resizeWorld();
 
         //Set some physics on the sprite
-        this.sprite.body.bounce.y = 0.2;
-        this.sprite.body.gravity.y = 2000;
+        this.hero.body.bounce.y = 0.2;
+        this.hero.body.gravity.y = 2000;
 
-        this.sprite.animations.add('left', [0, 1, 2], 10, true);
-        this.sprite.animations.add('right', [3, 4, 5], 10, true);
-        this.sprite.scale.x = 2;
-        this.sprite.scale.y = 2;
+        this.hero.animations.add('left', [0, 1, 2], 10, true);
+        this.hero.animations.add('right', [3, 4, 5], 10, true);
+        this.hero.scale.x = 2;
+        this.hero.scale.y = 2;
         //Make the camera follow the sprite
-        this.camera.follow(this.sprite);
+        this.camera.follow(this.hero);
 
         //Enable cursor keys so we can create some controls
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -66,39 +66,16 @@ SpriteAnim.Game.prototype = {
             this.gameEndText.y = this.camera.y +this.camera.height/2
         }
 
-        if (this.startText){
-            this.startText.x = this.camera.x + this.camera.width/2;
-            this.startText.y = this.camera.y + this.camera.height*3/4;
+        if (this.replayButton){
+            this.replayButton.x = this.camera.x + this.camera.width/2;
+            this.replayButton.y = this.camera.y + this.camera.height*3/4;
         }
 
         //Make the sprite collide with the ground layer
-        this.physics.arcade.collide(this.sprite, this.groundLayer);
+        this.physics.arcade.collide(this.hero, this.groundLayer);
 
-        if (this.cursors.up.isDown && this.sprite.body.onFloor()) {
-            this.sprite.body.velocity.y = -600;
-        }
-
-        this.sprite.body.velocity.x = 0;
-
-        if (this.cursors.right.isDown) {
-            this.sprite.body.velocity.x = 250;
-            this.sprite.animations.play('left');
-        } else if (this.cursors.left.isDown) {
-            this.sprite.body.velocity.x = -250;
-            this.sprite.animations.play('right');
-        }
-
-        if (this.sprite.body.velocity.x === 0) {
-            this.sprite.animations.stop();
-        }
-
-//        if(this.sprite.body.x > 400) {
-//            this.displayWinText(537);
-//        }
-//        if(this.sprite.body.x < 40) {
-//            this.displayLoseText(66);
-//        }
-
+        this.moveHero();
+        this.checkWin();
     },
 
     displayWinText: function (pts) {
@@ -106,7 +83,7 @@ SpriteAnim.Game.prototype = {
     },
 
     displayLoseText: function (pts) {
-        this.sprite.visible = false;
+        this.hero.visible = false;
         this.stage.backgroundColor = 0x993333;
         this.displayGameEndText(' Oh n0, 0ur her0 has fallen!\n\n Y0u g0t: 70 points\n\n Have y0u the heart to g0 0n,\n brave player?');
     },
@@ -123,16 +100,47 @@ SpriteAnim.Game.prototype = {
     },
 
     displayReplayButton: function (tint) {
-        this.startText = this.add.bitmapText(this.camera.x + this.camera.width/2, this.camera.y +this.camera.height*3/4, 'fat-and-tiny', 'CLICK ANYWHERE TO REPLAY.', 64);
-        this.startText.anchor.x = 0.5;
-        this.startText.smoothed = false;
-        this.startText.tint = tint;
+        this.replayButton = this.add.bitmapText(this.camera.x + this.camera.width/2, this.camera.y +this.camera.height*3/4, 'fat-and-tiny', 'CLICK ANYWHERE TO REPLAY.', 64);
+        this.replayButton.anchor.x = 0.5;
+        this.replayButton.smoothed = false;
+        this.replayButton.tint = tint;
         this.input.onDown.addOnce(this.start, this);
     },
 
     start: function () {
         this.gameEndText = null;
         this.state.start('SpriteAnim.Game');
+    },
+
+    moveHero: function () {
+        if (this.cursors.up.isDown && this.hero.body.onFloor()) {
+            this.hero.body.velocity.y = -600;
+        }
+
+        this.hero.body.velocity.x = 0;
+
+        if (this.cursors.right.isDown) {
+            this.hero.body.velocity.x = 250;
+            this.hero.animations.play('left');
+        } else if (this.cursors.left.isDown) {
+            this.hero.body.velocity.x = -250;
+            this.hero.animations.play('right');
+        }
+
+        if (this.hero.body.velocity.x === 0) {
+            this.hero.animations.stop();
+        }
+
+
+    },
+
+    checkWin: function () {
+        if(this.hero.body.x > 400) {
+            this.displayWinText(537);
+        }
+        if(this.hero.body.x < 40) {
+            this.displayLoseText(66);
+        }
     }
 
 };
