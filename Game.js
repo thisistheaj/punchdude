@@ -35,7 +35,11 @@ SpriteAnim.Game.prototype = {
 
         ////////////////////////////
 
-        this.hero = this.add.sprite(50, 960, 'guywalking');
+        var result = this.findObjectsByType('playerStart', this.map, 'Objects');
+        //
+        this.hero = this.game.add.sprite(result[0].x, result[0].y, 'guywalking');
+
+        // this.hero = this.add.sprite(50, 960, 'guywalking');
         this.physics.arcade.enable(this.hero);
 
         //Change the world size to match the size of this layer
@@ -51,6 +55,8 @@ SpriteAnim.Game.prototype = {
         this.hero.scale.y = 2;
         //Make the camera follow the sprite
         this.camera.follow(this.hero);
+
+        this.camera.focusOnXY(50,1080);
 
         //Enable cursor keys so we can create some controls
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -75,7 +81,7 @@ SpriteAnim.Game.prototype = {
         this.physics.arcade.collide(this.hero, this.groundLayer);
 
         this.moveHero();
-        this.checkWin();
+        // this.checkWin();
     },
 
     displayWinText: function (pts) {
@@ -83,7 +89,7 @@ SpriteAnim.Game.prototype = {
     },
 
     displayLoseText: function (pts) {
-        this.hero.visible = false;
+        // this.hero.visible = false;
         this.stage.backgroundColor = 0x993333;
         this.displayGameEndText(' Oh n0, 0ur her0 has fallen!\n\n Y0u g0t: 70 points\n\n Have y0u the heart to g0 0n,\n brave player?');
     },
@@ -141,6 +147,19 @@ SpriteAnim.Game.prototype = {
         if(this.hero.body.x < 40) {
             this.displayLoseText(66);
         }
+    },
+
+    findObjectsByType: function(type, map, layer) {
+        var result = new Array();
+        console.log(JSON.stringify(map.objects[layer]));
+        map.objects[layer].forEach(function(element){
+            console.log(JSON.stringify(element));
+            if(element.type === type) {
+                element.y -= map.tileHeight;
+                result.push(element);
+            }
+        });
+        return result;
     }
 
 };

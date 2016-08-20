@@ -65,8 +65,44 @@
          "width":180,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":45,
+         "name":"Objects",
+         "objects":[
+                {
+                 "gid":1,
+                 "height":32,
+                 "id":1,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":90.0033585222502,
+                 "y":1114.86649874055
+                }, 
+                {
+                 "gid":111,
+                 "height":32,
+                 "id":5,
+                 "name":"",
+                 "rotation":0,
+                 "type":"playerStart",
+                 "visible":true,
+                 "width":32,
+                 "x":62.9504617968094,
+                 "y":1120
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":180,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":10,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":32,
@@ -74,7 +110,7 @@
         {
          "columns":12,
          "firstgid":1,
-         "image":"..\/Dropbox\/Code\/phaser\/sprite-anim\/assets\/TileKit.png",
+         "image":"TileKit.png",
          "imageheight":608,
          "imagewidth":384,
          "margin":0,
