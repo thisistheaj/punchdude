@@ -58,6 +58,7 @@ SpriteAnim.Game.prototype = {
         this.score = 0;
         this.totalSeconds = 0;
         this.time.events.loop(Phaser.Timer.SECOND, this.incrementTime, this);
+        this.hero.punching = false;
     },
 
     update: function () {
@@ -85,15 +86,15 @@ SpriteAnim.Game.prototype = {
             this.physics.arcade.overlap(this.hero, this.enemies2[i], this.displayLoseText, null, this);
         }
 
-        this.moveHero();
         this.animateHero();
+        this.moveHero();
         this.animateEnemies1();
         this.moveEnemies1();
         this.animateEnemies2();
         this.moveEnemies2();
         this.checkWin();
         this.updateScoreText();
-        this.updateTimeText();
+            this.updateTimeText();
     },
 
     displayWinText: function () {
@@ -193,6 +194,7 @@ SpriteAnim.Game.prototype = {
         if (this.cursors.up.isDown && this.hero.body.onFloor()) {
             this.hero.body.velocity.y = -600;
         }
+        
     },
 
     animateHero: function () {
@@ -205,6 +207,7 @@ SpriteAnim.Game.prototype = {
                 this.hero.scale.x = 2;
             } else {
                 this.hero.animations.play('idle');
+                this.hero.punching = false;
             }
         } else {
             if (this.hero.body.velocity.y < 0) {
@@ -324,7 +327,7 @@ SpriteAnim.Game.prototype = {
 
         this.hero.animations.add('idle', [15,16,17], 10, true);
         this.hero.animations.add('run', [29, 30, 31], 10, true);
-        this.hero.animations.add('punch', [43, 44, 46,47], 10, true);
+        this.hero.animations.add('punch', [43, 44, 46,47], 10, false);
         this.hero.animations.add('jump', [32], 10, true);
         this.hero.animations.add('fall', [33], 10, true);
 
