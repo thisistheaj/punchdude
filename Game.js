@@ -51,7 +51,7 @@ SpriteAnim.Game.prototype = {
 
         this.winButton = this.add.button(10,this.world.height - 100,'myButton',this.displayWinText,this,1,0,2);
         this.loseButton = this.add.button(960 - 100,this.world.height - 100,'myButton',this.displayLoseText,this,4,3,5);
-        this.loseButton = this.add.button(this.camera.width/2 ,this.world.height - 100,'myButton',this.addScore,this,4,3,5);
+        this.pointsButton = this.add.button(this.camera.width/2 - 45 ,this.world.height - 100,'myButton',this.addScore,this,7,6,8);
 
         this.score = 0;
         this.totalSeconds = 0;
@@ -70,14 +70,18 @@ SpriteAnim.Game.prototype = {
             this.replayButton.y = this.camera.y + this.camera.height*3/4;
         }
 
-        //Make the sprite collide with the ground layer
-        //this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
-
         this.physics.arcade.collide(this.hero, this.groundLayer);
+
         for (var i = 0; i < this.enemies.length; i++) {
             this.physics.arcade.collide(this.enemies[i], this.groundLayer);
+            // this.physics.arcade.collide(this.hero, this.enemies[i]);
+            this.physics.arcade.overlap(this.hero, this.enemies[i], this.displayLoseText, null, this);
         }
+
         this.moveHero();
+        this.animateHero();
+        this.animateEnemies();
+        this.moveEnemies();
         this.checkWin();
         this.updateScoreText();
         this.updateTimeText();
@@ -166,18 +170,23 @@ SpriteAnim.Game.prototype = {
     },
 
     moveHero: function () {
-        if (this.cursors.up.isDown && this.hero.body.onFloor()) {
-            this.hero.body.velocity.y = -600;
-        }
-
+        //STOP
         this.hero.body.velocity.x = 0;
 
+        //WALK
         if (this.cursors.right.isDown) {
             this.hero.body.velocity.x = 250;
         } else if (this.cursors.left.isDown) {
             this.hero.body.velocity.x = -250;
         }
 
+        //JUMP
+        if (this.cursors.up.isDown && this.hero.body.onFloor()) {
+            this.hero.body.velocity.y = -600;
+        }
+    },
+
+    animateHero: function () {
         if (this.hero.body.onFloor()) {
             if (this.hero.body.velocity.x < 0) {
                 this.hero.animations.play('run');
@@ -189,17 +198,52 @@ SpriteAnim.Game.prototype = {
                 this.hero.animations.play('idle');
             }
         } else {
-            console.log("Prevelocity: " + Math.floor(this.hero.prevvelocity) + "Velocity" + Math.floor(this.hero.body.velocity.y));
-            console.log("Condition: " + (this.hero.body.velocity.y > this.hero.prevvelocity));
             if (this.hero.body.velocity.y < 0) {
                 this.hero.animations.play('jump');
             } else {
                 this.hero.animations.play('fall');
             }
-            this.hero.prevvelocity = this.hero.body.velocity.y;
         }
 
+    },
 
+    moveEnemies: function () {
+        for (var i = 0; i < this.enemies.length; i++) {
+
+            //if not moving
+            if (this.enemies[i].body.velocity.x === 0) {
+                //10% chance to start moving
+                if (Math.floor(Math.random()*100) > 90) {
+                    if (Math.floor(Math.random()*100) > 50) {
+                        this.enemies[i].body.velocity.x = 100;
+                    } else {
+                        this.enemies[i].body.velocity.x = -100;
+                    }
+                }
+            } else { //if moving
+                //10% chance to change dir
+                if (Math.floor(Math.random()*100) > 90) {
+                    this.enemies[i].body.velocity.x *= -1;
+                } else if (Math.floor(Math.random()*100) < 10) {
+                    this.enemies[i].body.velocity.x = 0;
+                }
+            }
+        }
+
+    },
+
+    animateEnemies: function () {
+        for (var i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].body.velocity.x < 0) {
+                this.enemies[i].animations.play('run');
+                this.enemies[i].scale.x = 2;
+            } else if (this.enemies[i].body.velocity.x > 0) {
+                this.enemies[i].animations.play('run');
+                this.enemies[i].scale.x = -2;
+            } else {
+                this.enemies[i].animations.play('idle');
+            }
+        }
     },
 
     checkWin: function () {
@@ -250,8 +294,13 @@ SpriteAnim.Game.prototype = {
             enemy.body.bounce.y = 0.2;
             enemy.body.gravity.y = 2000;
 
-            enemy.animations.add('left', [0, 1, 2], 10, true);
-            enemy.animations.add('right', [3, 4, 5], 10, true);
+            enemy.animations.add('idle', [21,24,26,22], 10, true);
+            enemy.animations.add('run', [35, 36, 37, 38, 39, 40], 10, true);
+            // enemy.animations.add('punch', [43, 44, 46,47], 10, true);
+            // enemy.animations.add('jump', [32], 10, true);
+            // enemy.animations.add('fall', [33], 10, true);
+
+            enemy.anchor.setTo(.5,.5);
 
             enemy.scale.x = 2;
             enemy.scale.y = 2;
