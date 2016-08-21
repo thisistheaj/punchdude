@@ -36,10 +36,12 @@ SpriteAnim.Game.prototype = {
         ////////////////////////////
 
         var playerPosition = this.findObjectsByType('playerStart', this.map, 'Objects');
-        var enemyPositions = this.findObjectsByType('enemy1', this.map, 'Objects');
+        var enemy1Positions = this.findObjectsByType('enemy1', this.map, 'Objects');
+        var enemy2Positions = this.findObjectsByType('enemy2', this.map, 'Objects');
 
 
-        this.enemies = this.makeEnemies(enemyPositions);
+        this.enemies1 = this.makeEnemies1(enemy1Positions);
+        this.enemies2 = this.makeEnemies2(enemy2Positions);
         this.makeHero(playerPosition);
         this.camera.follow(this.hero);
 
@@ -72,16 +74,23 @@ SpriteAnim.Game.prototype = {
 
         this.physics.arcade.collide(this.hero, this.groundLayer);
 
-        for (var i = 0; i < this.enemies.length; i++) {
-            this.physics.arcade.collide(this.enemies[i], this.groundLayer);
-            // this.physics.arcade.collide(this.hero, this.enemies[i]);
-            this.physics.arcade.overlap(this.hero, this.enemies[i], this.displayLoseText, null, this);
+        for (var i = 0; i < this.enemies1.length; i++) {
+            this.physics.arcade.collide(this.enemies1[i], this.groundLayer);
+            // this.physics.arcade.collide(this.hero, this.enemies1[i]);
+            this.physics.arcade.overlap(this.hero, this.enemies1[i], this.displayLoseText, null, this);
+        }
+        for (var i = 0; i < this.enemies2.length; i++) {
+            this.physics.arcade.collide(this.enemies2[i], this.groundLayer);
+            // this.physics.arcade.collide(this.hero, this.enemies1[i]);
+            this.physics.arcade.overlap(this.hero, this.enemies2[i], this.displayLoseText, null, this);
         }
 
         this.moveHero();
         this.animateHero();
-        this.animateEnemies();
-        this.moveEnemies();
+        this.animateEnemies1();
+        this.moveEnemies1();
+        this.animateEnemies2();
+        this.moveEnemies2();
         this.checkWin();
         this.updateScoreText();
         this.updateTimeText();
@@ -207,41 +216,81 @@ SpriteAnim.Game.prototype = {
 
     },
 
-    moveEnemies: function () {
-        for (var i = 0; i < this.enemies.length; i++) {
+    moveEnemies1: function () {
+        for (var i = 0; i < this.enemies1.length; i++) {
 
             //if not moving
-            if (this.enemies[i].body.velocity.x === 0) {
+            if (this.enemies1[i].body.velocity.x === 0) {
                 //10% chance to start moving
                 if (Math.floor(Math.random()*100) > 90) {
                     if (Math.floor(Math.random()*100) > 50) {
-                        this.enemies[i].body.velocity.x = 100;
+                        this.enemies1[i].body.velocity.x = 100;
                     } else {
-                        this.enemies[i].body.velocity.x = -100;
+                        this.enemies1[i].body.velocity.x = -100;
                     }
                 }
             } else { //if moving
                 //10% chance to change dir
                 if (Math.floor(Math.random()*100) > 90) {
-                    this.enemies[i].body.velocity.x *= -1;
+                    this.enemies1[i].body.velocity.x *= -1;
                 } else if (Math.floor(Math.random()*100) < 10) {
-                    this.enemies[i].body.velocity.x = 0;
+                    this.enemies1[i].body.velocity.x = 0;
                 }
             }
         }
 
     },
 
-    animateEnemies: function () {
-        for (var i = 0; i < this.enemies.length; i++) {
-            if (this.enemies[i].body.velocity.x < 0) {
-                this.enemies[i].animations.play('run');
-                this.enemies[i].scale.x = 2;
-            } else if (this.enemies[i].body.velocity.x > 0) {
-                this.enemies[i].animations.play('run');
-                this.enemies[i].scale.x = -2;
+    animateEnemies1: function () {
+        for (var i = 0; i < this.enemies1.length; i++) {
+            if (this.enemies1[i].body.velocity.x < 0) {
+                this.enemies1[i].animations.play('run');
+                this.enemies1[i].scale.x = 2;
+            } else if (this.enemies1[i].body.velocity.x > 0) {
+                this.enemies1[i].animations.play('run');
+                this.enemies1[i].scale.x = -2;
             } else {
-                this.enemies[i].animations.play('idle');
+                this.enemies1[i].animations.play('idle');
+            }
+        }
+    },
+
+    moveEnemies2: function () {
+        for (var i = 0; i < this.enemies2.length; i++) {
+
+            //if not moving
+            if (this.enemies2[i].body.velocity.x === 0) {
+                //10% chance to start moving
+                if (Math.floor(Math.random()*100) > 90) {
+                    if (Math.floor(Math.random()*100) > 50) {
+                        this.enemies2[i].body.velocity.x = 100;
+                    } else {
+                        this.enemies2[i].body.velocity.x = -100;
+                    }
+                }
+            } else { //if moving
+                //10% chance to change dir
+                if (Math.floor(Math.random()*100) > 90) {
+                    this.enemies2[i].body.velocity.x *= -1;
+                } else if (Math.floor(Math.random()*100) < 10) {
+                    this.enemies2[i].body.velocity.x = 0;
+                }
+            }
+        }
+
+    },
+
+
+    animateEnemies2: function () {
+        for (var i = 0; i < this.enemies2.length; i++) {
+            if (this.enemies2[i].body.velocity.x < 0) {
+                this.enemies2[i].animations.play('run');
+                this.enemies2[i].scale.x = 2;
+            } else if (this.enemies2[i].body.velocity.x > 0) {
+                this.enemies2[i].animations.play('run');
+                this.enemies2[i].scale.x = -2;
+            } else {
+                this.enemies2[i].animations.play('idle');
             }
         }
     },
@@ -286,8 +335,8 @@ SpriteAnim.Game.prototype = {
 
     },
 
-    makeEnemies: function (results) {
-        var enemies = [];
+    makeEnemies1: function (results) {
+        var enemies1 = [];
         for (var i = 0; i < results.length; i++) {
             var enemy = this.game.add.sprite(results[i].x, results[i].y, 'sprites');
             this.physics.arcade.enable(enemy);
@@ -304,9 +353,32 @@ SpriteAnim.Game.prototype = {
 
             enemy.scale.x = 2;
             enemy.scale.y = 2;
-            enemies.push(enemy);
+            enemies1.push(enemy);
         }
-        return enemies;
+        return enemies1;
+    },
+
+    makeEnemies2: function (results) {
+        var enemies2 = [];
+        for (var i = 0; i < results.length; i++) {
+            var enemy = this.game.add.sprite(results[i].x, results[i].y, 'sprites');
+            this.physics.arcade.enable(enemy);
+            enemy.body.bounce.y = 0.2;
+            enemy.body.gravity.y = 2000;
+
+            enemy.animations.add('idle', [21 +(3*14),23+(3*14),26+(3*14),22+(3*14)], 10, true);
+            enemy.animations.add('run', [35+(3*14), 36+(3*14), 37+(3*14), 38+(3*14), 39+(3*14), 40+(3*14)], 10, true);
+            // enemy.animations.add('punch', [43, 44, 46,47], 10, true);
+            // enemy.animations.add('jump', [32], 10, true);
+            // enemy.animations.add('fall', [33], 10, true);
+
+            enemy.anchor.setTo(.5,.5);
+
+            enemy.scale.x = 2;
+            enemy.scale.y = 2;
+            enemies2.push(enemy);
+        }
+        return enemies2;
     }
 
 };
