@@ -78,14 +78,14 @@ SpriteAnim.Game.prototype = {
         for (var i = 0; i < this.enemies1.length; i++) {
             this.physics.arcade.collide(this.enemies1[i], this.groundLayer);
             // this.physics.arcade.collide(this.hero, this.enemies1[i]);
-            this.physics.arcade.overlap(this.hero, this.enemies1[i], function () {
+            this.physics.arcade.collide(this.hero, this.enemies1[i], function () {
                 this.collideEnemy1(this.enemies1[i])
             }, null, this);
         }
         for (var i = 0; i < this.enemies2.length; i++) {
             this.physics.arcade.collide(this.enemies2[i], this.groundLayer);
             // this.physics.arcade.collide(this.hero, this.enemies1[i]);
-            this.physics.arcade.overlap(this.hero, this.enemies2[i],function () {
+            this.physics.arcade.collide(this.hero, this.enemies2[i],function () {
                 this.collideEnemy2(this.enemies2[i])
             } , null, this);
         }
@@ -393,16 +393,26 @@ SpriteAnim.Game.prototype = {
 
     collideEnemy1: function (enemy) {
         console.log('collided enemy 1');
-        console.log("enemy1:",enemy.body.x,enemy.body.y);
-        console.log("hero:",this.hero.body.x,this.hero.body.y);
-        this.displayLoseText()
+        // console.log("enemy1:",enemy.body.x,enemy.body.y);
+        // console.log("hero:",this.hero.body.x,this.hero.body.y);
+        if (this.hero.body.touching.down) {
+            console.log("pounced");
+        } else {
+            console.log("ouch");
+            // this.displayLoseText();
+        }
     },
 
     collideEnemy2: function (enemy) {
         console.log('collided enemy 2');
-        console.log("enemy2:",enemy.body.x,enemy.body.y);
-        console.log("hero:",this.hero.body.x,this.hero.body.y);
-        this.displayLoseText()
+        if (this.hero.body.touching.left || this.hero.body.touching.right) {
+            if (true) {
+                console.log("punched");
+            }
+        } else {
+            console.log("ouch");
+            // this.displayLoseText();
+        }
     }
 
 };
