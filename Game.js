@@ -78,12 +78,16 @@ SpriteAnim.Game.prototype = {
         for (var i = 0; i < this.enemies1.length; i++) {
             this.physics.arcade.collide(this.enemies1[i], this.groundLayer);
             // this.physics.arcade.collide(this.hero, this.enemies1[i]);
-            this.physics.arcade.overlap(this.hero, this.enemies1[i], this.displayLoseText, null, this);
+            this.physics.arcade.overlap(this.hero, this.enemies1[i], function () {
+                this.collideEnemy1(this.enemies1[i])
+            }, null, this);
         }
         for (var i = 0; i < this.enemies2.length; i++) {
             this.physics.arcade.collide(this.enemies2[i], this.groundLayer);
             // this.physics.arcade.collide(this.hero, this.enemies1[i]);
-            this.physics.arcade.overlap(this.hero, this.enemies2[i], this.displayLoseText, null, this);
+            this.physics.arcade.overlap(this.hero, this.enemies2[i],function () {
+                this.collideEnemy2(this.enemies2[i])
+            } , null, this);
         }
 
         this.animateHero();
@@ -385,6 +389,20 @@ SpriteAnim.Game.prototype = {
             enemies2.push(enemy);
         }
         return enemies2;
+    },
+
+    collideEnemy1: function (enemy) {
+        console.log('collided enemy 1');
+        console.log("enemy1:",enemy.body.x,enemy.body.y);
+        console.log("hero:",this.hero.body.x,this.hero.body.y);
+        this.displayLoseText()
+    },
+
+    collideEnemy2: function (enemy) {
+        console.log('collided enemy 2');
+        console.log("enemy2:",enemy.body.x,enemy.body.y);
+        console.log("hero:",this.hero.body.x,this.hero.body.y);
+        this.displayLoseText()
     }
 
 };
