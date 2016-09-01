@@ -396,22 +396,25 @@ SpriteAnim.Game.prototype = {
         // console.log("enemy1:",enemy.body.x,enemy.body.y);
         // console.log("hero:",this.hero.body.x,this.hero.body.y);
         if (this.hero.body.touching.down) {
+            //todo: add death
             console.log("pounced");
         } else {
             console.log("ouch");
-            // this.displayLoseText();
+            this.displayLoseText();
         }
     },
 
     collideEnemy2: function (enemy) {
         console.log('collided enemy 2');
         if (this.hero.body.touching.left || this.hero.body.touching.right) {
+            //todo: add punching key
             if (true) {
+                //todo: add death
                 console.log("punched");
             }
         } else {
             console.log("ouch");
-            // this.displayLoseText();
+            this.displayLoseText();
         }
     }
 
