@@ -94,7 +94,7 @@ SpriteAnim.Game.prototype = {
         this.moveEnemies2();
         this.checkWin();
         this.updateScoreText();
-            this.updateTimeText();
+        this.updateTimeText();
     },
 
     displayWinText: function () {
@@ -194,7 +194,6 @@ SpriteAnim.Game.prototype = {
         if (this.cursors.up.isDown && this.hero.body.onFloor()) {
             this.hero.body.velocity.y = -600;
         }
-        
     },
 
     animateHero: function () {
@@ -299,9 +298,13 @@ SpriteAnim.Game.prototype = {
     },
 
     checkWin: function () {
+        if(this.hero.body.y > 1280) {
+            this.displayLoseText(537);
+        }
         if(this.hero.body.x > 5400) {
             this.displayWinText(537);
         }
+
     },
 
     findObjectsByType: function(type, map, layer) {
