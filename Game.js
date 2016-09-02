@@ -312,7 +312,7 @@ SpriteAnim.Game.prototype = {
     },
 
     findObjectsByType: function(type, map, layer) {
-        var result = new Array();
+        var result = [];
         map.objects[layer].forEach(function(element){
             if(element.type === type) {
                 element.y -= map.tileHeight;
@@ -396,8 +396,10 @@ SpriteAnim.Game.prototype = {
         // console.log("enemy1:",enemy.body.x,enemy.body.y);
         // console.log("hero:",this.hero.body.x,this.hero.body.y);
         if (this.hero.body.touching.down) {
-            //todo: add death
+            this.enemies1.splice(this.enemies1.indexOf(enemy),1);
+            enemy.destroy();
             console.log("pounced");
+            //todo: add score
         } else {
             console.log("ouch");
             this.displayLoseText();
@@ -409,8 +411,10 @@ SpriteAnim.Game.prototype = {
         if (this.hero.body.touching.left || this.hero.body.touching.right) {
             //todo: add punching key
             if (true) {
-                //todo: add death
+                this.enemies2.splice(this.enemies2.indexOf(enemy),1);
+                enemy.destroy();
                 console.log("punched");
+                //todo: add score
             }
         } else {
             console.log("ouch");
