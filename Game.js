@@ -7,7 +7,8 @@ SpriteAnim.Game = function () {
 
 SpriteAnim.Game.prototype = {
 
-    init: function () {},
+    init: function () {
+    },
 
     create: function () {
 
@@ -51,65 +52,74 @@ SpriteAnim.Game.prototype = {
 
         this.createScoreText();
         this.createTimeText();
-        
+
         this.score = 0;
         this.totalSeconds = 0;
         this.time.events.loop(Phaser.Timer.SECOND, this.incrementTime, this);
+        this.heroAlive = true;
     },
 
     update: function () {
 
-        if(this.gameEndText){
-            this.gameEndText.x = this.camera.x + this.camera.width/2;
-            this.gameEndText.y = this.camera.y +this.camera.height/2
+        if (this.gameEndText) {
+            this.gameEndText.x = this.camera.x + this.camera.width / 2;
+            this.gameEndText.y = this.camera.y + this.camera.height / 2
         }
 
-        if (this.replayButton){
-            this.replayButton.x = this.camera.x + this.camera.width/2;
-            this.replayButton.y = this.camera.y + this.camera.height*3/4;
+        if (this.replayButton) {
+            this.replayButton.x = this.camera.x + this.camera.width / 2;
+            this.replayButton.y = this.camera.y + this.camera.height * 3 / 4;
         }
 
         this.physics.arcade.collide(this.hero, this.groundLayer);
 
+        if (this.heroAlive) {
+            this.animateHero();
+            this.moveHero();
+            this.checkWin();
+        }
+
         for (var i = 0; i < this.enemies1.length; i++) {
             this.physics.arcade.collide(this.enemies1[i], this.groundLayer);
-            // this.physics.arcade.collide(this.hero, this.enemies1[i]);
-            this.physics.arcade.collide(this.hero, this.enemies1[i], function () {
-                this.collideEnemy1(this.enemies1[i])
-            }, null, this);
+            if (this.heroAlive) {
+                this.physics.arcade.collide(this.hero, this.enemies1[i], function () {
+                    this.collideEnemy1(this.enemies1[i])
+                }, null, this);
+            }
         }
         for (var i = 0; i < this.enemies2.length; i++) {
             this.physics.arcade.collide(this.enemies2[i], this.groundLayer);
-            // this.physics.arcade.collide(this.hero, this.enemies1[i]);
-            this.physics.arcade.collide(this.hero, this.enemies2[i],function () {
-                this.collideEnemy2(this.enemies2[i])
-            } , null, this);
+            if (this.heroAlive) {
+                this.physics.arcade.collide(this.hero, this.enemies2[i], function () {
+                    this.collideEnemy2(this.enemies2[i])
+                }, null, this);
+            }
         }
 
-        this.animateHero();
-        this.moveHero();
+
         this.animateEnemies1();
         this.moveEnemies1();
         this.animateEnemies2();
         this.moveEnemies2();
-        this.checkWin();
         this.updateScoreText();
         this.updateTimeText();
     },
 
     displayWinText: function () {
-        this.displayGameEndText(' Congratulations! our her0\n has made it t0 the g0al!\n\n Y0u g0t: ' + this.score +' points!\n\n Shall you try and best\n yourself, brave player?');
+        this.displayGameEndText(' Congratulations! our her0\n has made it t0 the g0al!\n\n Y0u g0t: ' + this.score + ' points!\n\n Shall you try and best\n yourself, brave player?');
     },
 
     displayLoseText: function () {
         this.hero.visible = false;
+        this.heroAlive = false;
+        this.hero.destroy(true);
         this.stage.backgroundColor = 0x993333;
-        this.displayGameEndText(' Oh n0, 0ur her0 has fallen!\n\n Y0u g0t: ' + this.score +' points\n\n Have y0u the heart to g0 0n,\n brave player?');
+        this.displayGameEndText(' Oh n0, 0ur her0 has fallen!\n\n Y0u g0t: ' + this.score + ' points\n\n Have y0u the heart to g0 0n,\n brave player?');
     },
 
     displayGameEndText: function (text) {
-        if(!this.gameEndText){
-            this.gameEndText = this.add.bitmapText(this.camera.x + this.camera.width/2, this.camera.y + this.camera.height/2, 'interfont', text, 40);
+        if (!this.gameEndText) {
+            this.gameEndText = this.add.bitmapText(this.camera.x + this.camera.width / 2, this.camera.y + this.camera.height / 2, 'interfont', text, 40);
             this.gameEndText.anchor.x = 0.5;
             this.gameEndText.anchor.y = 0.5;
             this.gameEndText.smoothed = false;
@@ -119,7 +129,7 @@ SpriteAnim.Game.prototype = {
     },
 
     displayReplayButton: function (tint) {
-        this.replayButton = this.add.bitmapText(this.camera.x + this.camera.width/2, this.camera.y +this.camera.height*3/4, 'fat-and-tiny', 'CLICK ANYWHERE TO REPLAY.', 64);
+        this.replayButton = this.add.bitmapText(this.camera.x + this.camera.width / 2, this.camera.y + this.camera.height * 3 / 4, 'fat-and-tiny', 'CLICK ANYWHERE TO REPLAY.', 64);
         this.replayButton.anchor.x = 0.5;
         this.replayButton.smoothed = false;
         this.replayButton.tint = tint;
@@ -156,12 +166,16 @@ SpriteAnim.Game.prototype = {
         var totalSecondsLeft = 120 - this.totalSeconds;
         var minutes = Math.floor(totalSecondsLeft / 60);
         var seconds = Math.floor(totalSecondsLeft % 60);
-        if (minutes < 10) { minutes = "0" + minutes}
-        if (seconds < 10) { seconds = "0" + seconds}
-        this.timeText.setText("Time: " + minutes + ":" +seconds);
+        if (minutes < 10) {
+            minutes = "0" + minutes
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds
+        }
+        this.timeText.setText("Time: " + minutes + ":" + seconds);
     },
     incrementTime: function () {
-        if(!this.gameEndText){
+        if (!this.gameEndText) {
             if (this.totalSeconds < 120) {
                 this.totalSeconds++;
             } else {
@@ -197,7 +211,7 @@ SpriteAnim.Game.prototype = {
     },
 
     animateHero: function () {
-        if (this.input.keyboard.isDown(Phaser.Keyboard.X)){
+        if (this.input.keyboard.isDown(Phaser.Keyboard.X)) {
             this.punching = true;
             this.hero.animations.play('punch');
         } else {
@@ -229,8 +243,8 @@ SpriteAnim.Game.prototype = {
             //if not moving
             if (this.enemies1[i].body.velocity.x === 0) {
                 //10% chance to start moving
-                if (Math.floor(Math.random()*100) > 90) {
-                    if (Math.floor(Math.random()*100) > 50) {
+                if (Math.floor(Math.random() * 100) > 90) {
+                    if (Math.floor(Math.random() * 100) > 50) {
                         this.enemies1[i].body.velocity.x = 100;
                     } else {
                         this.enemies1[i].body.velocity.x = -100;
@@ -238,9 +252,9 @@ SpriteAnim.Game.prototype = {
                 }
             } else { //if moving
                 //10% chance to change dir
-                if (Math.floor(Math.random()*100) > 90) {
+                if (Math.floor(Math.random() * 100) > 90) {
                     this.enemies1[i].body.velocity.x *= -1;
-                } else if (Math.floor(Math.random()*100) < 10) {
+                } else if (Math.floor(Math.random() * 100) < 10) {
                     this.enemies1[i].body.velocity.x = 0;
                 }
             }
@@ -268,8 +282,8 @@ SpriteAnim.Game.prototype = {
             //if not moving
             if (this.enemies2[i].body.velocity.x === 0) {
                 //10% chance to start moving
-                if (Math.floor(Math.random()*100) > 90) {
-                    if (Math.floor(Math.random()*100) > 50) {
+                if (Math.floor(Math.random() * 100) > 90) {
+                    if (Math.floor(Math.random() * 100) > 50) {
                         this.enemies2[i].body.velocity.x = 100;
                     } else {
                         this.enemies2[i].body.velocity.x = -100;
@@ -277,9 +291,9 @@ SpriteAnim.Game.prototype = {
                 }
             } else { //if moving
                 //10% chance to change dir
-                if (Math.floor(Math.random()*100) > 90) {
+                if (Math.floor(Math.random() * 100) > 90) {
                     this.enemies2[i].body.velocity.x *= -1;
-                } else if (Math.floor(Math.random()*100) < 10) {
+                } else if (Math.floor(Math.random() * 100) < 10) {
                     this.enemies2[i].body.velocity.x = 0;
                 }
             }
@@ -303,19 +317,19 @@ SpriteAnim.Game.prototype = {
     },
 
     checkWin: function () {
-        if(this.hero.body.y > 1280) {
+        if (this.hero.body.y > 1280) {
             this.displayLoseText(537);
         }
-        if(this.hero.body.x > 5400) {
+        if (this.hero.body.x > 5400) {
             this.displayWinText(537);
         }
 
     },
 
-    findObjectsByType: function(type, map, layer) {
+    findObjectsByType: function (type, map, layer) {
         var result = [];
-        map.objects[layer].forEach(function(element){
-            if(element.type === type) {
+        map.objects[layer].forEach(function (element) {
+            if (element.type === type) {
                 element.y -= map.tileHeight;
                 result.push(element);
             }
@@ -331,19 +345,16 @@ SpriteAnim.Game.prototype = {
         this.hero.body.gravity.y = 2000;
         this.hero.prevvelocity = this.hero.body.velocity.y;
 
-        this.hero.anchor.setTo(.5,.5);
+        this.hero.anchor.setTo(.5, .5);
 
-        this.hero.animations.add('idle', [15,16,17], 10, true);
+        this.hero.animations.add('idle', [15, 16, 17], 10, true);
         this.hero.animations.add('run', [29, 30, 31], 10, true);
-        this.hero.animations.add('punch', [43, 44, 46,47], 10, false);
+        this.hero.animations.add('punch', [43, 44, 46, 47], 10, false);
         this.hero.animations.add('jump', [32], 10, true);
         this.hero.animations.add('fall', [33], 10, true);
 
         this.hero.scale.x = 2;
         this.hero.scale.y = 2;
-
-        this.camera.follow(this.hero);
-
     },
 
     makeEnemies1: function (results) {
@@ -354,10 +365,10 @@ SpriteAnim.Game.prototype = {
             enemy.body.bounce.y = 0.2;
             enemy.body.gravity.y = 2000;
 
-            enemy.animations.add('idle', [21,24,26,22], 10, true);
+            enemy.animations.add('idle', [21, 24, 26, 22], 10, true);
             enemy.animations.add('run', [35, 36, 37, 38, 39, 40], 10, true);
 
-            enemy.anchor.setTo(.5,.5);
+            enemy.anchor.setTo(.5, .5);
 
             enemy.scale.x = 2;
             enemy.scale.y = 2;
@@ -374,10 +385,10 @@ SpriteAnim.Game.prototype = {
             enemy.body.bounce.y = 0.2;
             enemy.body.gravity.y = 2000;
 
-            enemy.animations.add('idle', [21 +(3*14),23+(3*14),26+(3*14),22+(3*14)], 10, true);
-            enemy.animations.add('run', [35+(3*14), 36+(3*14), 37+(3*14), 38+(3*14), 39+(3*14), 40+(3*14)], 10, true);
+            enemy.animations.add('idle', [21 + (3 * 14), 23 + (3 * 14), 26 + (3 * 14), 22 + (3 * 14)], 10, true);
+            enemy.animations.add('run', [35 + (3 * 14), 36 + (3 * 14), 37 + (3 * 14), 38 + (3 * 14), 39 + (3 * 14), 40 + (3 * 14)], 10, true);
 
-            enemy.anchor.setTo(.5,.5);
+            enemy.anchor.setTo(.5, .5);
 
             enemy.scale.x = 2;
             enemy.scale.y = 2;
@@ -388,7 +399,7 @@ SpriteAnim.Game.prototype = {
 
     collideEnemy1: function (enemy) {
         if (this.hero.body.touching.down) {
-            this.enemies1.splice(this.enemies1.indexOf(enemy),1);
+            this.enemies1.splice(this.enemies1.indexOf(enemy), 1);
             enemy.destroy();
             this.addScore();
         } else {
@@ -399,7 +410,7 @@ SpriteAnim.Game.prototype = {
     collideEnemy2: function (enemy) {
         if (this.hero.body.touching.left || this.hero.body.touching.right) {
             if (this.punching) {
-                this.enemies2.splice(this.enemies2.indexOf(enemy),1);
+                this.enemies2.splice(this.enemies2.indexOf(enemy), 1);
                 enemy.destroy();
                 this.addScore();
             }
