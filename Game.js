@@ -2,6 +2,7 @@
  * Created by ajbeckner on 8/18/16.
  */
 SpriteAnim.Game = function () {
+    this.punching = false;
 };
 
 SpriteAnim.Game.prototype = {
@@ -58,7 +59,6 @@ SpriteAnim.Game.prototype = {
         this.score = 0;
         this.totalSeconds = 0;
         this.time.events.loop(Phaser.Timer.SECOND, this.incrementTime, this);
-        this.hero.punching = false;
     },
 
     update: function () {
@@ -201,22 +201,27 @@ SpriteAnim.Game.prototype = {
     },
 
     animateHero: function () {
-        if (this.hero.body.onFloor()) {
-            if (this.hero.body.velocity.x < 0) {
-                this.hero.animations.play('run');
-                this.hero.scale.x = -2;
-            } else if (this.hero.body.velocity.x > 0) {
-                this.hero.animations.play('run');
-                this.hero.scale.x = 2;
-            } else {
-                this.hero.animations.play('idle');
-                this.hero.punching = false;
-            }
+        if (this.input.keyboard.isDown(Phaser.Keyboard.X)){
+            this.punching = true;
+            this.hero.animations.play('punch');
         } else {
-            if (this.hero.body.velocity.y < 0) {
-                this.hero.animations.play('jump');
+            if (this.hero.body.onFloor()) {
+                this.punching = false;
+                if (this.hero.body.velocity.x < 0) {
+                    this.hero.animations.play('run');
+                    this.hero.scale.x = -2;
+                } else if (this.hero.body.velocity.x > 0) {
+                    this.hero.animations.play('run');
+                    this.hero.scale.x = 2;
+                } else {
+                    this.hero.animations.play('idle');
+                }
             } else {
-                this.hero.animations.play('fall');
+                if (this.hero.body.velocity.y < 0) {
+                    this.hero.animations.play('jump');
+                } else {
+                    this.hero.animations.play('fall');
+                }
             }
         }
 
@@ -410,7 +415,7 @@ SpriteAnim.Game.prototype = {
         console.log('collided enemy 2');
         if (this.hero.body.touching.left || this.hero.body.touching.right) {
             //todo: add punching key
-            if (true) {
+            if (this.punching) {
                 this.enemies2.splice(this.enemies2.indexOf(enemy),1);
                 enemy.destroy();
                 console.log("punched");
