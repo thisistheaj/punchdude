@@ -404,7 +404,7 @@ SpriteAnim.Game.prototype = {
             this.enemies1.splice(this.enemies1.indexOf(enemy),1);
             enemy.destroy();
             console.log("pounced");
-            //todo: add score
+            this.addScore();
         } else {
             console.log("ouch");
             this.displayLoseText();
@@ -419,7 +419,7 @@ SpriteAnim.Game.prototype = {
                 this.enemies2.splice(this.enemies2.indexOf(enemy),1);
                 enemy.destroy();
                 console.log("punched");
-                //todo: add score
+                this.addScore();
             }
         } else {
             console.log("ouch");
