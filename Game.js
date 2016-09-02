@@ -51,11 +51,7 @@ SpriteAnim.Game.prototype = {
 
         this.createScoreText();
         this.createTimeText();
-
-        this.winButton = this.add.button(10,this.world.height - 100,'myButton',this.displayWinText,this,1,0,2);
-        this.loseButton = this.add.button(960 - 100,this.world.height - 100,'myButton',this.displayLoseText,this,4,3,5);
-        this.pointsButton = this.add.button(this.camera.width/2 - 45 ,this.world.height - 100,'myButton',this.addScore,this,7,6,8);
-
+        
         this.score = 0;
         this.totalSeconds = 0;
         this.time.events.loop(Phaser.Timer.SECOND, this.incrementTime, this);
@@ -360,9 +356,6 @@ SpriteAnim.Game.prototype = {
 
             enemy.animations.add('idle', [21,24,26,22], 10, true);
             enemy.animations.add('run', [35, 36, 37, 38, 39, 40], 10, true);
-            // enemy.animations.add('punch', [43, 44, 46,47], 10, true);
-            // enemy.animations.add('jump', [32], 10, true);
-            // enemy.animations.add('fall', [33], 10, true);
 
             enemy.anchor.setTo(.5,.5);
 
@@ -383,9 +376,6 @@ SpriteAnim.Game.prototype = {
 
             enemy.animations.add('idle', [21 +(3*14),23+(3*14),26+(3*14),22+(3*14)], 10, true);
             enemy.animations.add('run', [35+(3*14), 36+(3*14), 37+(3*14), 38+(3*14), 39+(3*14), 40+(3*14)], 10, true);
-            // enemy.animations.add('punch', [43, 44, 46,47], 10, true);
-            // enemy.animations.add('jump', [32], 10, true);
-            // enemy.animations.add('fall', [33], 10, true);
 
             enemy.anchor.setTo(.5,.5);
 
@@ -397,32 +387,23 @@ SpriteAnim.Game.prototype = {
     },
 
     collideEnemy1: function (enemy) {
-        console.log('collided enemy 1');
-        // console.log("enemy1:",enemy.body.x,enemy.body.y);
-        // console.log("hero:",this.hero.body.x,this.hero.body.y);
         if (this.hero.body.touching.down) {
             this.enemies1.splice(this.enemies1.indexOf(enemy),1);
             enemy.destroy();
-            console.log("pounced");
             this.addScore();
         } else {
-            console.log("ouch");
             this.displayLoseText();
         }
     },
 
     collideEnemy2: function (enemy) {
-        console.log('collided enemy 2');
         if (this.hero.body.touching.left || this.hero.body.touching.right) {
-            //todo: add punching key
             if (this.punching) {
                 this.enemies2.splice(this.enemies2.indexOf(enemy),1);
                 enemy.destroy();
-                console.log("punched");
                 this.addScore();
             }
         } else {
-            console.log("ouch");
             this.displayLoseText();
         }
     }
